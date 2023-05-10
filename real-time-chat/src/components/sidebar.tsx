@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { signOut } from 'next-auth/react';
 import {
   Box,
   Flex,
@@ -13,6 +14,7 @@ import {
   useDisclosure,
   List,
   ListItem,
+  Avatar,
 } from '@chakra-ui/react';
 
 import { Session } from 'next-auth';
@@ -34,10 +36,11 @@ type SidebarProps = {
   session: Session | null;
   changeToChat: (friend: User) => void;
   setFriends: React.Dispatch<React.SetStateAction<User[]>>;
+  currentFriend: User | null;
 };
 
 function Sidebar({
-  friendsInfo = [], friendReqs, setAddPage, changeToChat, setFriends, session,
+  friendsInfo = [], friendReqs, setAddPage, changeToChat, setFriends, session, currentFriend,
 }: SidebarProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [friendRequests, setFriendRequests] = useState<User[]>(friendReqs);
@@ -46,13 +49,11 @@ function Sidebar({
 
   useEffect(() => {
     const incomingFriendRequestHandler = (data: User) => {
-      console.log('Pusher called for new friend req');
       setFriendRequests((prev: User[]) => [data, ...prev]);
       toast.success(`Friend Request From: ${data.name}`);
     };
 
     const handleNewFriend = (data: User) => {
-      console.log('Pusher called for accept');
       // remove from friendreq list if exsists
       setFriendRequests((prev: User[]) => prev.filter((f) => f.id !== data.id));
       // add to friends if id does not exsist
@@ -68,7 +69,6 @@ function Sidebar({
 
     const handleFriendDecline = (data: User) => {
       // remove from friendreq list if exsists
-      console.log('Pusher called for deny');
       setFriendRequests((prev: User[]) => prev.filter((f) => f.id !== data.id));
     };
 
@@ -78,6 +78,9 @@ function Sidebar({
         if (index !== -1) {
           prev.splice(index, 1);
           const temp = [data, ...prev];
+          if (currentFriend?.id !== data.id) {
+            toast.success(`New Message from ${data.name}`);
+          }
           return temp;
         }
         return prev;
@@ -97,7 +100,7 @@ function Sidebar({
       pusherCient.unbind('denied_friend_request', handleFriendDecline);
       pusherCient.unbind('new_message_friend', handleNewMessage);
     };
-  }, []);
+  }, [currentFriend]);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentFriendsInfo = friendsInfo.slice(indexOfFirstItem, indexOfLastItem);
@@ -127,6 +130,13 @@ function Sidebar({
         paddingBottom="8"
       >
         <Stack spacing="3">
+          <Stack direction="row">
+            <Avatar
+              size="lg"
+              src={`${session?.user.image}`}
+            />
+            <Text maxW="100%" fontSize="2xl" fontWeight="800">{session?.user.name}</Text>
+          </Stack>
           <Text fontWeight="bold">Messages</Text>
           <List spacing="1">
             {currentFriendsInfo.map((friendInfo) => (
@@ -165,6 +175,32 @@ function Sidebar({
             {`${friendRequests.length || ''} Friend Requests`}
           </Button>
         </Stack>
+
+        <Box
+          paddingTop="8"
+          paddingBottom="8"
+          height="100%"
+          flexDirection="row"
+        >
+          <Button
+            as="a"
+            onClick={() => {
+              signOut({ redirect: false });
+            }}
+            display={{ base: 'none', md: 'inline-flex' }}
+            fontSize="sm"
+            fontWeight={600}
+            color="white"
+            bg="red.500"
+            _hover={{
+              bg: 'blue.500',
+              cursor: 'pointer',
+            }}
+          >
+            Sign Out
+          </Button>
+
+        </Box>
       </Box>
       <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
         <DrawerOverlay>

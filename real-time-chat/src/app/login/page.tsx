@@ -13,6 +13,7 @@ import {
 import { SVGProps, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
+import '../styles.css';
 
 const UseColorModeValue = useColorModeValue;
 
@@ -66,11 +67,11 @@ function Login() {
     }
   };
   return (
+
     <Flex
       minH="100vh"
       align="center"
       justify="center"
-      bg={UseColorModeValue('gray.50', 'gray.800')}
     >
       <Stack spacing={8} mx="auto" maxW="lg" py={12} px={6}>
         <Stack align="center">

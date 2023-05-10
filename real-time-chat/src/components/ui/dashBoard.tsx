@@ -20,9 +20,6 @@ export default function Dashboard({ friendRequests = [], friendsInfo, session }:
     if (check && (check2 || addPage)) {
       setCurrentFriend(friend);
       setAddPage(false);
-    } else {
-      console.log(friends);
-      console.log(friend);
     }
   };
   const changeToAdd = () => {
@@ -40,6 +37,7 @@ export default function Dashboard({ friendRequests = [], friendsInfo, session }:
           setAddPage={changeToAdd}
           changeToChat={changeToChat}
           setFriends={setFriends}
+          currentFriend={currentUser}
         />
       </Box>
       <Box flex={4} border="1px solid gray" p={4} borderRadius="5px">

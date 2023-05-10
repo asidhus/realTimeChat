@@ -9,7 +9,6 @@ import { useSession, signOut } from 'next-auth/react';
 
 import useSWR from 'swr';
 import DashBoard from '@/components/ui/dashBoard';
-import NavBar from '@/components/ui/navbar';
 import Loading from '../../components/ui/loading';
 
 async function grabInitialFriendRequests(url: string) {
@@ -51,7 +50,7 @@ function Dashboard() {
   const friendsInfo = data?.friendsInfo ?? [];
   return (
     <>
-      <NavBar session={session} status={status} />
+      {/* <NavBar session={session} status={status} /> */}
       <DashBoard friendRequests={friendRequests} friendsInfo={friendsInfo} session={session} />
     </>
   );

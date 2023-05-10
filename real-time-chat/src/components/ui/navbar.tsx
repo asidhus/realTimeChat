@@ -2,6 +2,7 @@
 
 import { ReactNode } from 'react';
 import { signOut } from 'next-auth/react';
+import { MdMessage } from 'react-icons/md';
 import {
   Box,
   Flex,
@@ -12,6 +13,7 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
+  Icon,
 } from '@chakra-ui/react';
 import { Link } from '@chakra-ui/next-js';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
@@ -103,7 +105,7 @@ export default function NavBar({ session, status }:{ session: Session | null, st
           onClick={isOpen ? onClose : onOpen}
         />
         <HStack spacing={8} alignItems="center">
-          <Box>Logo</Box>
+          <Icon size="lg" as={MdMessage} />
           <HStack
             as="nav"
             spacing={4}
